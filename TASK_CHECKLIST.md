@@ -6,8 +6,8 @@
 - Setup React frontend (commit: 120bb81)
 
 ## IN-PROGRESS
--Fetching the data from backend
--Simple Design UI for frontend
+- Fetching the data from backend
+- Simple Design UI for frontend
 
 ## TODO
 - Mobile app (empty for now)
