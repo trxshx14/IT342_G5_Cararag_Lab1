@@ -22,7 +22,7 @@ function Login() {
       const data = text ? JSON.parse(text) : {};
 
       if (res.ok && data.token) {
-        // Clean the token (remove any accidental quotes)
+        
         const cleanToken = data.token.replace(/['"]+/g, '');
         localStorage.setItem("token", cleanToken);
         console.log("Token saved successfully");
