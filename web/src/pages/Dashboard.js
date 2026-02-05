@@ -1,53 +1,60 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../templates/Dashboard.css";
 
 function Dashboard() {
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if user is logged in
     const token = localStorage.getItem("token");
+    
     if (!token) {
+      console.warn("No token found, redirecting to login.");
       navigate("/login");
-      return;
     }
-
-    fetch("http://localhost:8080/api/user/me", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Unauthorized");
-        return res.json();
-      })
-      .then((data) => setUser(data))
-      .catch(() => {
-        localStorage.removeItem("token");
-        navigate("/login");
-      });
   }, [navigate]);
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
   };
-
-  if (!user) return <div className="loading">Loading profile...</div>;
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-card">
-        <h2>User Dashboard</h2>
-        <div className="info-group">
-          <p><strong>Username:</strong> {user.userName}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
+        <div className="welcome-section">
+          <h1 className="welcome-title">Welcome!</h1>
+          <p className="welcome-message">You've successfully logged in to your account.</p>
+          <div className="welcome-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+            </svg>
+          </div>
         </div>
-        <div className="dashboard-actions">
-          <button className="btn-primary" onClick={() => navigate("/profile")}>My Profile</button>
-          <button className="btn-danger" onClick={logout}>Logout</button>
+
+        <div className="dashboard-buttons">
+          <button 
+            className="btn-profile" 
+            onClick={() => navigate("/profile")}
+          >
+            <span className="button-icon">👤</span>
+            Go to Profile
+          </button>
+          
+          <button 
+            className="btn-logout" 
+            onClick={handleLogout}
+          >
+            <span className="button-icon">🚪</span>
+            Logout
+          </button>
+        </div>
+
+        <div className="dashboard-footer">
+          <p className="footer-text">Manage your account settings and preferences</p>
         </div>
       </div>
     </div>
