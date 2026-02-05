@@ -15,8 +15,8 @@ public class AuthService {
     private final TokenProvider tokenProvider;
 
     public AuthService(UserRepository userRepository,
-                      PasswordEncoder passwordEncoder,
-                      TokenProvider tokenProvider) {
+                    PasswordEncoder passwordEncoder,
+                    TokenProvider tokenProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
