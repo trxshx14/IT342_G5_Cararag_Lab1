@@ -8,10 +8,16 @@ import java.util.Base64;
 public class TokenProvider {
 
     public String generateToken(String userName) {
-        return Base64.getEncoder().encodeToString(userName.getBytes());
+        
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(userName.getBytes());
     }
 
     public String getUserNameFromToken(String token) {
-        return new String(Base64.getDecoder().decode(token));
+        try {
+            return new String(Base64.getUrlDecoder().decode(token.trim()));
+        } catch (Exception e) {
+            System.out.println("Token Decoding Failed: " + e.getMessage());
+            return null;
+        }
     }
 }

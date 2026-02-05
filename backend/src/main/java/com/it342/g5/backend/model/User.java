@@ -32,7 +32,7 @@ public class User {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // getters and setters
+    
     public int getUserId() { return userId; }
     public String getUserName() { return userName; }
     public String getEmail() { return email; }
