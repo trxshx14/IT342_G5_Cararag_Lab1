@@ -12,6 +12,12 @@ function Register() {
   const submit = async (e) => {
     e.preventDefault();
 
+    // Basic validation
+    if (form.password !== form.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:8080/api/auth/register", {
         method: "POST",
@@ -19,30 +25,41 @@ function Register() {
         body: JSON.stringify(form),
       });
 
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
+
       if (response.ok) {
-        const data = await response.json();
-        console.log("Success:", data);
-        // Navigate to login after successful DB save
+        alert("Registration successful!");
         navigate("/login");
       } else {
-        alert("Registration failed! Check backend console.");
+        alert("Registration failed: " + (data.message || "Server error"));
       }
     } catch (error) {
-      console.error("Error connecting to backend:", error);
+      console.error("Error:", error);
+      alert("Could not connect to server.");
     }
   };
 
   return (
-    <form onSubmit={submit}>
-      <h2>Register</h2>
-      <input name="firstName" placeholder="First Name" onChange={handleChange} />
-      <input name="lastName" placeholder="Last Name" onChange={handleChange} />
-      <input name="userName" placeholder="Username" onChange={handleChange} />
-      <input name="email" placeholder="Email" onChange={handleChange} />
-      <input type="password" name="password" placeholder="Password" onChange={handleChange} />
-      <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} />
-      <button type="submit">Register</button>
-    </form>
+    <div className="register-container">
+      <form className="register-form" onSubmit={submit}>
+        <h2>Register</h2>
+        <input name="firstName" placeholder="First Name" onChange={handleChange} required />
+        <input name="lastName" placeholder="Last Name" onChange={handleChange} required />
+        <input name="userName" placeholder="Username" onChange={handleChange} required />
+        <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
+        <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} required />
+        
+        <button type="submit" className="btn-primary">Create Account</button>
+        
+        <div className="divider"><span>OR</span></div>
+        
+        <button type="button" className="btn-secondary" onClick={() => navigate("/login")}>
+          Back to Login
+        </button>
+      </form>
+    </div>
   );
 }
 

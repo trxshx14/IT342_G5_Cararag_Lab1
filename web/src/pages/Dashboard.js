@@ -3,34 +3,53 @@ import { useNavigate } from "react-router-dom";
 import "../templates/Dashboard.css";
 
 function Dashboard() {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) navigate("/");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
 
     fetch("http://localhost:8080/api/user/me", {
       headers: {
         Authorization: "Bearer " + token,
       },
     })
-      .then((res) => res.json())
-      .then((data) => setUser(data));
+      .then((res) => {
+        if (!res.ok) throw new Error("Unauthorized");
+        return res.json();
+      })
+      .then((data) => setUser(data))
+      .catch(() => {
+        localStorage.removeItem("token");
+        navigate("/login");
+      });
   }, [navigate]);
 
   const logout = () => {
     localStorage.removeItem("token");
-    navigate("/");
+    navigate("/login");
   };
 
+  if (!user) return <div className="loading">Loading profile...</div>;
+
   return (
-    <div>
-      <h2>Dashboard</h2>
-      <p>Username: {user.userName}</p>
-      <p>Email: {user.email}</p>
-      <p>Name: {user.firstName} {user.lastName}</p>
-      <button onClick={logout}>Logout</button>
+    <div className="dashboard-container">
+      <div className="dashboard-card">
+        <h2>User Dashboard</h2>
+        <div className="info-group">
+          <p><strong>Username:</strong> {user.userName}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
+        </div>
+        <div className="dashboard-actions">
+          <button className="btn-primary" onClick={() => navigate("/profile")}>My Profile</button>
+          <button className="btn-danger" onClick={logout}>Logout</button>
+        </div>
+      </div>
     </div>
   );
 }
