@@ -9,7 +9,7 @@
 - Complete Documentation Update (commit: 4ec7508)
 
 ## IN-PROGRESS
-
+-Mobile application (commit: 0484cd8)
 ## TODO
 - Mobile app (empty for now)
 
