@@ -15,14 +15,25 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+
         val etUsername = findViewById<EditText>(R.id.etUsername)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
+        val btnGoToRegister = findViewById<Button>(R.id.btnGoToRegister)
+
 
         btnLogin.setOnClickListener {
+            val username = etUsername.text.toString().trim()
+            val password = etPassword.text.toString().trim()
+
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val loginRequest = LoginDTO(
-                username = etUsername.text.toString(),
-                password = etPassword.text.toString()
+                username = username,
+                password = password
             )
 
             lifecycleScope.launch {
@@ -35,15 +46,24 @@ class LoginActivity : AppCompatActivity() {
                         val sharedPref = getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
                         sharedPref.edit().putString("jwt_token", token).apply()
 
+                        Toast.makeText(this@LoginActivity, "Login Successful!", Toast.LENGTH_SHORT).show()
+
                         startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
                         finish()
                     } else {
+
                         Toast.makeText(this@LoginActivity, "Invalid Credentials", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(this@LoginActivity, "Connection Error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, "Connection Error: Check Backend", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+
+
+        btnGoToRegister.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 }
