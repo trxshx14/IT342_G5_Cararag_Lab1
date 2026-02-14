@@ -13,7 +13,9 @@
 
 
 ## IN-PROGRESS
--Mobile application (commit: 0484cd8)
+
+
 ## TODO
-- Mobile app (empty for now)
+
+
 
